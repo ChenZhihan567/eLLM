@@ -1,0 +1,39 @@
+# pyproject.toml
+
+[project]
+dependencies = ["hf-transfer>=0.1.9,<0.2"]
+name = "acma"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[tool.pixi.system-requirements]
+cuda = "12.0"
+
+[tool.pixi.dependencies]
+pytorch-gpu = "*"
+transformers = ">=4.56.2,<5"  # ✅ 已满足 TimeSformer 要求 (>=4.30.0)
+opencv = ">=4.12.0,<5"
+ffmpeg = ">=8.0.0,<9"
+moviepy = ">=1.0.3,<2"
+ffmpeg-python = ">=0.2.0,<0.3"
+
+# 🎯 新增: SlowFast支持 (可选)
+[tool.pixi.pypi-dependencies]
+acma = { path = ".", editable = true }
+# pytorchvideo = ">=0.1.5"  # 如果需要SlowFast，取消注释
+# fvcore = ">=0.1.5"        # 如果需要SlowFast，取消注释
+
+[tool.pixi.tasks]
+# 🎯 新增: 测试任务
+test-videomae = "python -m acma.pipeline --backbone videomae"
+test-timesformer = "python -m acma.pipeline --backbone timesformer"
+test-compatibility = "python tests/test_video_compatibility.py"
+train = "python -m acma.pipeline"
